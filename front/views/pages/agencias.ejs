@@ -1,0 +1,131 @@
+<h1>
+    <%=title%>
+</h1>
+
+
+<form id="userForm">
+    <input required type="hidden" name="id" id="id">
+    <label for="username">Nome</label>
+    <input required name="username" id="username" type="text"><br>
+    <label for="cnpj">cnpj</label>
+    <input required name="cnpj" id="cnpj" type="text"><br>
+    <label for="password">Senha</label>
+    <input required name="password" id="password" type="text"><br>
+    <label for="telefone">Telefone</label>
+    <input required name="telefone" id="telefone" type="text">
+    <label for="email">Email</label>
+    <input required name="email" id="email" type="text"><br>
+    <button type="submit">Enviar</button>
+    <button type="reset">Cancelar</button>
+</form>
+<span id="error"></span>
+
+<%if(error){%>
+    <span>
+        <%=error%>
+    </span>
+    <%}%>
+
+        <table>
+            <thead>
+                <tr>
+                    <%for(let col of cols){%>
+                        <th>
+                            <%=col%>
+                        </th>
+                        <%}%>
+                </tr>
+            </thead>
+            <tbody>
+                <%for(let agencia of agencias){%>
+                    <tr>
+                        <%for(let prop in agencia){%>
+                            <td>
+                                <%=agencia[prop]%>
+                            </td>
+                            <%}%>
+                                <td>
+                                    <button onclick="editagencia('<%=agencia.id%>')">Editar</button>
+                                    <button onclick="deleteagencia('<%=agencia.id%>')">Deletar</button>
+                                </td>
+                    </tr>
+                    <%}%>
+            </tbody>
+        </table>
+
+        <script>
+            const form = document.getElementById('userForm')
+            form.addEventListener("submit", (e) => {
+                e.preventDefault()
+                const agencia = mountDataForm()
+                let id = agencia.id
+                let METHOD = id ? 'PUT' : 'POST';
+                let URL = id ? `/agencias/${id}` : '/agencias';
+                createOrUpdate(agencia, URL, METHOD)
+            })
+
+            // CRIAR OU ATULIZAR USUÁRIO
+            function createOrUpdate(agencia, URL, METHOD) {
+                console.log(agencia)
+                fetch(URL, {
+                    method: METHOD,
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(agencia)
+                })
+                    .then(async (res) => { return await checkError(res) })
+                    .then((agencia) => {
+                        form.reset()
+                        window.location.reload()
+                    })
+                    .catch((error) => { document.getElementById('error').innerText = error })
+            }
+
+            // BUSCAR USUÁRIO A SER EDITADO PELO ID E CARREGAR NOS INPUTS DO FORM
+            function editagencia(id) {
+            console.log(id)
+                fetch("/agencias/" + id, {
+                    method: "GET"
+                })
+                    .then(async (res) => { return await checkError(res) })
+                    .then((agencia) => {
+                        console.log('retornou a agencia', agencia)
+                        for (let prop in agencia) {
+                            const input = document.querySelector(`input[name="${prop}"]`);
+                            input.value = agencia[prop]
+                        }
+                    })
+                    .catch((error) => { document.getElementById('error').innerText = error })
+            }
+
+            // DELETAR UM USUÁRIO PELO ID
+            function deleteagencia(id) {
+                fetch("/agencias/" + id, {
+                    method: "DELETE"
+                })
+                    .then(async (res) => { return await checkError(res) })
+                    .then((agencia) => {
+                        window.location.reload()
+                    })
+                    .catch((error) => { document.getElementById('error').innerText = error })
+            }
+
+            // CHECAR ERROS NA RESPOSTA DA REQUISIÇÃO
+            async function checkError(res) {
+                if (!res.ok) {
+                    const err = await res.json()
+                    throw err
+                }
+                return res.json()
+            }
+
+            // MONTAR DADOS DO FORMULÁRIO USANDO FORMDATA
+            function mountDataForm() {
+                const formData = new FormData(form)
+                const agencia = {}
+                formData.forEach((v, k) => {
+                    agencia[k] = v
+                })
+                return agencia
+            }
+
+        </script>
