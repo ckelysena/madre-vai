@@ -32,6 +32,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var agenciasRouter = require('./routes/agencias');
 var pacotesRouter = require('./routes/pacotes');
+var pacotasRouter = require('./routes/pacotas');
 var authRouter = require('./routes/auth');
 
 // DEFINI OS ENDPOINT//RECURSO PARA AS ROTAS
@@ -39,6 +40,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/agencias', agenciasRouter);
 app.use('/pacotes', pacotesRouter);
+app.use('/pacotas', pacotasRouter);
 app.use('/auth', limiter, authRouter);
 
 // view engine setup
