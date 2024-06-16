@@ -7,7 +7,11 @@
             <li><a href="/agencias"><i class="material-icons left">local_grocery_store</i>agencias</a></li>
             <li><a href="/pacotes"><i class="material-icons left">person</i>erro</a></li>
             <li><a href="/pacotas"><i class="material-icons left">flight</i>Pacotes</a></li>
-            <li><a href="/login"><i class="material-icons left">login</i>Login</a></li>
+            <% if (!isAuthenticated) { %>
+                <li><a href="/login"><i class="material-icons left">login</i>Login</a></li>
+            <% } else { %>
+                <li><a href="/login/logout"><i class="material-icons left">logout</i>Logout</a></li>
+            <% } %>
         </ul>
 
         <ul id="nav-mobile" class="sidenav">

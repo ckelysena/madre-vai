@@ -19,6 +19,12 @@ app.use(session({
   cookie: { secure: false }
 }))
 
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = !!req.session.token;
+  next();
+});
+
+
 // IMPORTANDO ROTAS DE /ROUTES...
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
