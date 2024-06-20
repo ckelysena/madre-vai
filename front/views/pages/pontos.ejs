@@ -3,16 +3,15 @@
 </h1>
 
 
-<form id="pacoteForm">
+<form id="userForm">
     <input required type="hidden" name="id" id="id">
-    <label for="nomePacote">Nome do Pacote</label>
-    <input required name="nomePacote" id="nomePacote" type="text"><br>
-    <label for="passagem">Passagem</label>
-    <input required name="passagem" id="passagem" type="text"><br>
-    <label for="localSaida">Local de Saida</label>
-    <input required name="localSaida" id="localSaida" type="text"><br>
-    <label for="localDestino">Local de Destino</label>
-    <input required name="localDestino" id="localDestino" type="text">
+    <label for="username">Nome</label>
+    <input required name="username" id="username" type="text"><br>
+    <label for="pais">País</label>
+    <input required name="pais" id="pais" type="text"><br>
+    <label for="descricao">Descrição</label>
+    <input required name="descricao" id="descricao" type="text"><br>
+   
     <button type="submit">Enviar</button>
     <button type="reset">Cancelar</button>
 </form>
@@ -20,7 +19,7 @@
 
 <%if(error){%>
     <span>
-        <%=JSON.stringify(error)%>
+        <%=error%>
     </span>
     <%}%>
 
@@ -35,16 +34,16 @@
                 </tr>
             </thead>
             <tbody>
-                <%for(let pacote of pacotes){%>
+                <%for(let ponto of pontos){%>
                     <tr>
-                        <%for(let prop in pacote){%>
+                        <%for(let prop in ponto){%>
                             <td>
-                                <%=pacote[prop]%>
+                                <%=ponto[prop]%>
                             </td>
                             <%}%>
                                 <td>
-                                    <button onclick="editpacote('<%=pacote.id%>')">Editar</button>
-                                    <button onclick="deletepacote('<%=pacote.id%>')">Deletar</button>
+                                    <button onclick="editponto('<%=ponto.id%>')">Editar</button>
+                                    <button onclick="deleteponto('<%=ponto.id%>')">Deletar</button>
                                 </td>
                     </tr>
                     <%}%>
@@ -52,59 +51,59 @@
         </table>
 
         <script>
-            const form = document.getElementById('pacoteForm')
+            const form = document.getElementById('userForm')
             form.addEventListener("submit", (e) => {
                 e.preventDefault()
-                const pacote = mountDataForm()
-                let id = pacote.id
+                const ponto = mountDataForm()
+                let id = ponto.id
                 let METHOD = id ? 'PUT' : 'POST';
-                let URL = id ? `/pacotes/${id}` : '/pacotes';
-                createOrUpdate(pacote, URL, METHOD)
+                let URL = id ? `/pontos/${id}` : '/pontos';
+                createOrUpdate(ponto, URL, METHOD)
             })
 
-            // CRIAR OU ATULIZAR pacote
-            function createOrUpdate(pacote, URL, METHOD) {
-                console.log(pacote)
+            // CRIAR OU ATULIZAR USUÁRIO
+            function createOrUpdate(ponto, URL, METHOD) {
+                console.log(ponto)
                 fetch(URL, {
                     method: METHOD,
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(pacote)
+                    body: JSON.stringify(ponto)
                 })
                     .then(async (res) => { return await checkError(res) })
-                    .then((pacote) => {
+                    .then((ponto) => {
                         form.reset()
                         window.location.reload()
                     })
                     .catch((error) => { document.getElementById('error').innerText = error })
             }
 
-            // BUSCAR pacote A SER EDITADO PELO ID E CARREGAR NOS INPUTS DO FORM
-            function editpacote(id) {
+            // BUSCAR USUÁRIO A SER EDITADO PELO ID E CARREGAR NOS INPUTS DO FORM
+            function editponto(id) {
             console.log(id)
-                fetch("/pacotes/" + id, {
+                fetch("/pontos/" + id, {
                     method: "GET"
                 })
                     .then(async (res) => { return await checkError(res) })
-                    .then((pacote) => {
-                        console.log('retornou o pacote', pacote)
-                        for (let prop in pacote) {
+                    .then((ponto) => {
+                        console.log('retornou a ponto', ponto)
+                        for (let prop in ponto) {
                             const input = document.querySelector(`input[name="${prop}"]`);
-                            input.value = pacote[prop]
+                            input.value = ponto[prop]
                         }
                     })
                     .catch((error) => { document.getElementById('error').innerText = error })
             }
 
-            // DELETAR UM pacote PELO ID
-            function deletepacote(id) {
-                fetch("/pacotes/" + id, {
+            // DELETAR UM USUÁRIO PELO ID
+            function deleteponto(id) {
+                fetch("/pontos/" + id, {
                     method: "DELETE"
                 })
                     .then(async (res) => { return await checkError(res) })
-                    .then((pacote) => {
+                    .then((ponto) => {
                         window.location.reload()
                     })
-                    .catch((error) => { document.getElementById('error').innerText = JSON.stringify(error) })
+                    .catch((error) => { document.getElementById('error').innerText = error })
             }
 
             // CHECAR ERROS NA RESPOSTA DA REQUISIÇÃO
@@ -119,11 +118,11 @@
             // MONTAR DADOS DO FORMULÁRIO USANDO FORMDATA
             function mountDataForm() {
                 const formData = new FormData(form)
-                const pacote = {}
+                const ponto = {}
                 formData.forEach((v, k) => {
-                    pacote[k] = v
+                    ponto[k] = v
                 })
-                return pacote
+                return ponto
             }
 
         </script>

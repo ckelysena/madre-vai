@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
-const url = "https://cuddly-rotary-phone-7vvv5xjg4jp7fwx79-4200.app.github.dev/pacotas/"
+const url = "https://glorious-orbit-5gv664r6pv72p4qw-4200.app.github.dev/pontos/"
 
-/* GET pacotas listing. */
+/* GET pontos listing. */
 router.get('/', function (req, res, next) {
   const token = req.session.token || ""
   fetch(url, { 
@@ -19,10 +19,10 @@ router.get('/', function (req, res, next) {
       }
       return res.json()
     })
-    .then((pacotas) => {
-      let title = "Gestão de pacotas"
-      let cols = ["Id", "Nome do Pacote", "Passagem", "Local de Saida", "Local de Destino", "Refeicao", "Ações"]
-      res.render('layout', {body: 'pages/pacotas', title, pacotas, cols, error: "" })
+    .then((pontos) => {
+      let title = "Gestão de pontos"
+      let cols = ["Id", "Nome", "País", "Descrição", "Ações"]
+      res.render('layout', {body: 'pages/pontos', title, pontos, cols, error: "" })
     })
     .catch((error) => {
       console.log('Erro', error)
@@ -31,9 +31,9 @@ router.get('/', function (req, res, next) {
     })
 });
 
-// POST new pacota
+// POST new ponto
 router.post("/", (req, res) => {
-  const { nomePacote, passagem, localSaida, localDestino, refeicao} = req.body
+  const { username, pais, descricao } = req.body
   const token = req.session.token || ""
   fetch(url + '/register', {
     method: "POST",
@@ -43,7 +43,7 @@ router.post("/", (req, res) => {
 
      },
     
-    body: JSON.stringify({ nomePacote, passagem, localSaida, localDestino, refeicao })
+    body: JSON.stringify({ username, pais, descricao })
   })
   .then(async (res) => {
     if (!res.ok) {
@@ -52,22 +52,22 @@ router.post("/", (req, res) => {
     }
     return res.json()
   })
-    .then((pacota) => {
-      res.send(pacota)
+    .then((ponto) => {
+      res.send(ponto)
     })
     .catch((error) => {
       res.status(500).send(error)
     })
 })
 
-// UPDATE pacota
+// UPDATE ponto
 router.put("/:id", (req, res) => {
   const { id } = req.params
-  const { nomePacote, passagem, localSaida, localDestino, refeicao } = req.body
+  const { username, pais, descricao } = req.body
   fetch(url+id, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ nomePacote, passagem, localSaida, localDestino, refeicao })
+    body: JSON.stringify({ username, pais, descricao })
   }).then(async (res) => {
     if (!res.ok) {
       const err = await res.json()
@@ -75,15 +75,15 @@ router.put("/:id", (req, res) => {
     }
     return res.json()
   })
-    .then((pacota) => {
-      res.send(pacota)
+    .then((ponto) => {
+      res.send(ponto)
     })
     .catch((error) => {
       res.status(500).send(error)
     })
 })
 
-// REMOVE pacota
+// REMOVE ponto
 router.delete("/:id", (req, res) => {
   const { id } = req.params
   const token = req.session.token || ""
@@ -99,15 +99,15 @@ router.delete("/:id", (req, res) => {
     }
     return res.json()
   })
-    .then((pacota) => {
-      res.send(pacota)
+    .then((ponto) => {
+      res.send(ponto)
     })
     .catch((error) => {
       res.status(500).send(error)
     })
 })
 
-// GET pacota by id
+// GET ponto by id
 router.get("/:id", (req, res) => {
   const { id } = req.params
   const token = req.session.token || ""
@@ -124,8 +124,8 @@ router.get("/:id", (req, res) => {
     }
     return res.json()
   })
-    .then((pacota) => {
-      res.send(pacota)
+    .then((ponto) => {
+      res.send(ponto)
     })
     .catch((error) => {
       res.status(500).send(error)

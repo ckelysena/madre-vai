@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 
-const url = "https://cuddly-rotary-phone-7vvv5xjg4jp7fwx79-4200.app.github.dev/auth/login"
+const url = "https://glorious-orbit-5gv664r6pv72p4qw-4200.app.github.dev/auth/login"
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
