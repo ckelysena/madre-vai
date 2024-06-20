@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const url = "https://glorious-orbit-5gv664r6pv72p4qw-4200.app.github.dev/pontos/"
+const url = "https://musical-winner-5gggr97wpj5jf7q95-4200.app.github.dev/pontos/"
 
 /* GET pontos listing. */
 router.get('/', function (req, res, next) {
@@ -62,26 +62,33 @@ router.post("/", (req, res) => {
 
 // UPDATE ponto
 router.put("/:id", (req, res) => {
-  const { id } = req.params
-  const { username, pais, descricao } = req.body
-  fetch(url+id, {
+  const { id } = req.params;
+  const { username, pais, descricao } = req.body;
+  const token = req.session.token || "";
+
+  fetch(url + id, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, pais, descricao })
-  }).then(async (res) => {
-    if (!res.ok) {
-      const err = await res.json()
-      throw err
-    }
-    return res.json()
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ username, pais, descricao }),
   })
+    .then(async (response) => {
+      if (!response.ok) {
+        const err = await response.json();
+        throw err;
+      }
+      return response.json();
+    })
     .then((ponto) => {
-      res.send(ponto)
+      res.send(ponto);
     })
     .catch((error) => {
-      res.status(500).send(error)
-    })
-})
+      console.error("Erro ao atualizar ponto:", error);
+      res.status(500).send(error);
+    });
+});
 
 // REMOVE ponto
 router.delete("/:id", (req, res) => {
